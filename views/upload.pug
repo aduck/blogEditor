@@ -1,0 +1,59 @@
+doctype html
+html
+	head
+		title 文件上传
+		meta(charset='utf-8')
+		link(href="../css/style.css",rel="stylesheet")
+	body
+		.container
+			.editor-tools
+				label.editor-tool.editor-tool-upload(for="upfile") 上传图片
+					input#upfile(type="file",multiple,name="photo")
+			form(action='/journal',method='post')
+				.editor-markdown
+					textarea#markEditor(name="content")
+				input.editor-submit(type="submit",value="提交")
+		script.
+			var editor=document.getElementById('markEditor')
+			var fileId='upfile'
+			var upUrl='/photos/upload'
+			var imgReg=/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/
+			var fileIpt=document.getElementById(fileId)
+			var formData=new FormData()
+			// 上传文件
+			function upFile(url,files,cb){
+				var xhr=new XMLHttpRequest()
+				xhr.open('POST',url,true)
+				xhr.send(files)
+				xhr.onreadystatechange=function(){
+					if(xhr.readyState==4){
+						if((xhr.status>=200&&xhr.status<300)||xhr.status==304){			
+							cb(xhr.responseText)
+						}
+					}
+				}
+			}
+			// 选择文件并上传
+			function selectFile(e){
+				var files=[].slice.call(e.target.files,0)
+				files.forEach(function(file,index){
+					if(!imgReg.test(file.name)){
+						// 不是图片
+						return handleError('只能上传图片！文件已忽略')
+					}else{
+						formData.append('photo',file)
+					}
+				})
+				upFile(upUrl,formData,function(res){
+					JSON.parse(res).forEach(function(item){
+						editor.value+='![]('+item.path+') \n'
+					})
+				})
+			}
+			// 错误处理
+			function handleError(msg){
+
+			}
+
+			fileIpt.addEventListener('change',selectFile,false)
+			
