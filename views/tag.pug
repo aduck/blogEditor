@@ -1,0 +1,21 @@
+extends layout.pug
+block header
+	title #{blog.name}-标签
+	link(href="../css/style.css",rel="stylesheet")
+block content
+	.container
+		.journalItems
+			each item,index in items
+				.journalItem
+					.journalItem-thumb
+						a(href=`/journal/${item._id}`)
+							img(src=`${item.thumb}`,alt="")
+					.journalItem-tags
+						each val in item.tags
+							a(href=`/tag/${val}`) #{val}
+					.journalItem-title
+						a(href=`/journal/${item._id}`) #{item.title}
+					.journalItem-info
+						| #{dates[index]}
+			else
+				p 没有数据

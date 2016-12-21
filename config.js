@@ -1,5 +1,9 @@
 module.exports={
-	host:'http://127.0.0.1',
-	port:8080,
-	upload:'uploads'
+	root:'http://127.0.0.1:8080/',
+	upload:'uploads',
+	maxUpdate:12,
+	blog:{
+		name:'个人博客',
+		author:'higher'
+	}
 }

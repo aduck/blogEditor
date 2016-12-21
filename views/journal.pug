@@ -1,0 +1,13 @@
+extends ./layout.pug
+
+block header
+	title #{blog.name}
+	link(href="../css/style.css",rel="stylesheet")
+block content
+	.container
+		.journal-title #{title}
+		.journal-info
+			span view：#{meta.pv}
+			span date：#{date}
+		.journal-content.markdown
+			!=content
