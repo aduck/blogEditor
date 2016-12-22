@@ -3,7 +3,7 @@ html
   head
     title #{blog.name}-日志录入
     meta(charset='utf-8')
-    link(href="../css/editor.css",rel="stylesheet")
+    link(href=`${root}css/editor.css`,rel="stylesheet")
   body
     .container
       form(action="/journal/create",method="post")
@@ -66,15 +66,14 @@ html
       fileIpt.addEventListener('change',function(e){
         selectFile(e,function(res){
           JSON.parse(res).forEach(function(item){
-            editor.value+='!['+item.filename+'](../'+item.path.replace(/\\/,"/")+') \n';
+            editor.value+='!['+item.filename+'](!{root}'+item.path.replace(/\\/,"/")+') \n';
           })
         })
       },false)
       // 缩略图
       thumbIpt.addEventListener('change',function(e){
-      console.log(e.target.files)
         selectFile(e,function(res){
-          var resPath='../'+JSON.parse(res)[0].path.replace(/\\/,"/")
+          var resPath='!{root}'+JSON.parse(res)[0].path.replace(/\\/,"/")
           document.getElementById('thumbUp-save').value=resPath
           document.querySelectorAll('#thumbUp-pre img')[0].src=resPath
         })

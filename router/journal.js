@@ -3,17 +3,25 @@ var router=express.Router()
 var marked=require('marked')
 var Journal=require('../models/journal')
 var moment=require('moment')
+var checkLogin=require('../middle/check').checkLogin
 
 // 添加文章页
-router.get('/create',function(req,res,next){
+router.get('/create',checkLogin,function(req,res,next){
 	res.render('journalCreate')
 })
 // 添加文章
-router.post('/create',function(req,res,next){
+router.post('/create',checkLogin,function(req,res,next){
 	var title=req.body.title
 	var thumb=req.body.thumbPath
 	var tags=req.body.tags.split(' ')
-	var content=marked(req.body.content)
+	var content=req.body.content
+	// 验证
+	try{
+		if(title.trim().length<1) throw new Error('标题不能为空')
+		if(content.trim().length<1) throw new Error('内容不能为空')
+	}catch(e){
+		return res.redirect('/journal/create')
+	}
 	var journal=new Journal({
 		title:title,
 		thumb:thumb,
@@ -28,17 +36,15 @@ router.post('/create',function(req,res,next){
 // 查看文章
 router.get('/',function(req,res,next){
 	var dates=[]
-	Journal
-		.find({})
-		.sort({'meta.updateAt':-1})
-		.exec(function(err,journals){
-			if(err) return;
+	var page=req.query.page || 1
+	Journal.getPage(2,page,function(err,journals,total){
+		if(err) return;
 			journals.forEach(function(journal){
 				dates.push(moment(journal.meta.updateAt).format('DD	MMM YYYY'))
 			})
 			res.locals.dates=dates
-			res.render('journals',{items:journals})
-		})
+			res.render('journals',{items:journals,current:page,total:total})
+	})
 })
 // 查看单个文章
 router.get('/:id',function(req,res,next){
@@ -47,21 +53,58 @@ router.get('/:id',function(req,res,next){
 		.findByIdAndUpdate(id,{$inc:{'meta.pv':1}})
 		.exec(function(err,journal){
 			if(err) return;
-			res.locals.date=moment(journal.meta.updateAt).format('YYYY-MM-DD HH:mm')
+			res.locals.html=marked(journal.content)
+			res.locals.date=moment(journal.meta.updateAt).format('YYYY/MM/DD HH:mm')
 			res.render('journal',journal)
 		})
 })
 // 修改文章页
-router.get('/:id/edit',function(req,res,next){
-	res.send('edit')
+router.get('/:id/edit',checkLogin,function(req,res,next){
+	var id=req.params.id
+	Journal
+		.findById(id)
+		.exec(function(err,journal){
+			if(err) return
+			var tagstr=journal.tags.join(' ')
+			res.locals.tagstr=tagstr
+			res.render('journalEdit',journal)
+		})
 })
 // 修改文章
-router.post('/:id/edit',function(req,res,next){
-	res.send('111')
+router.post('/:id/edit',checkLogin,function(req,res,next){
+	var id=req.params.id
+	var title=req.body.title
+	var thumb=req.body.thumbPath
+	var tags=req.body.tags.split(' ')
+	var content=req.body.content
+	// 验证
+	try{
+		if(title.trim().length<1) throw new Error('标题不能为空')
+		if(content.trim().length<1) throw new Error('内容不能为空')
+	}catch(e){
+		return res.redirect('/journal/:id/edit')
+	}
+	Journal
+		.update({_id:id},{
+			title:title,
+			thumb:thumb,
+			tags:tags,
+			content:content
+		})
+		.exec(function(err){
+			if(err) return;
+			res.redirect('/journal')
+		})
 })
 // 删除文章
-router.get('/:id/remove',function(req,res,next){
-	res.send('111')
+router.get('/:id/remove',checkLogin,function(req,res,next){
+	var id=req.params.id
+	Journal
+		.remove({_id:id})
+		.exec(function(err){
+			if(err) return;
+			res.redirect('/journal')
+		})
 })
 
 module.exports=router

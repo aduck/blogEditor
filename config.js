@@ -5,5 +5,11 @@ module.exports={
 	blog:{
 		name:'个人博客',
 		author:'higher'
-	}
+	},
+	session:{
+		key:'blog',
+		secret:'blog',
+		maxAge:20*60*1000
+	},
+	mongodb:'mongodb://localhost/test'
 }

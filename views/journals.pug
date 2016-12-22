@@ -2,7 +2,7 @@ extends ./layout.pug
 
 block header
 	title #{blog.name}
-	link(href="../css/style.css",rel="stylesheet")
+	link(href=`${root}css/style.css`,rel="stylesheet")
 block content
 	.container
 		.journalItems
@@ -20,3 +20,5 @@ block content
 						| #{dates[index]}
 			else
 				p 没有数据
+		.pageNavs
+			include inc/page.pug

@@ -2,7 +2,10 @@ var mongoose=require('mongoose')
 var journalSchema=new mongoose.Schema({
 	title:String,
 	thumb:String,
-	tags:Array,
+	tags:{
+		type:Array,
+		default:[]
+	},
 	content:String,
 	meta:{
 		createAt:{
