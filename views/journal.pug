@@ -2,12 +2,23 @@ extends ./layout.pug
 
 block header
 	title #{blog.name}
-	link(href="../css/style.css",rel="stylesheet")
+	link(href=`${root}css/style.css`,rel="stylesheet")
 block content
 	.container
-		.journal-title #{title}
+		.journal-title #{journal.title}
 		.journal-info
-			span view：#{meta.pv}
+			span view：#{journal.meta.pv}
 			span date：#{date}
 		.journal-content.markdown
 			!=html
+		.journal-links
+			.journal-link 上一篇：
+				if siblings[0]
+					a(href=`/journal/${siblings[0]._id}`) #{siblings[0].title}
+				else
+					span 无
+			.journal-link 下一篇：
+				if siblings[1]
+					a(href=`/journal/${siblings[1]._id}`) #{siblings[1].title}
+				else
+					span 无

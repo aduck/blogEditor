@@ -15,13 +15,17 @@ POST /photo/upload 上传图片
 GET /tag 所有标签页
 GET /tag/wo 标签列表页
 
+/**用户**/
+GET /login 登陆页
+POST /login 登陆
+GET /
+
 /**配置项**/
 上传目录
 最大上传个数
 session相关
 
 入口进程管理
-session权限管理
 日志
 分页(列表页、详情页)
 通知

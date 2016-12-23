@@ -22,7 +22,6 @@ var journalSchema=new mongoose.Schema({
 		}
 	}
 })
-
 journalSchema.pre('save',function(next){
 	this.meta.createAt=this.meta.updateAt=Date.now()
 	next()

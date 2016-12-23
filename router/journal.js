@@ -55,7 +55,13 @@ router.get('/:id',function(req,res,next){
 			if(err) return;
 			res.locals.html=marked(journal.content)
 			res.locals.date=moment(journal.meta.updateAt).format('YYYY/MM/DD HH:mm')
-			res.render('journal',journal)
+			// 获取上下篇
+			Journal.getSiblings(id,function(err,items){
+				res.render('journal',{
+					journal:journal,
+					siblings:items
+				})
+			})
 		})
 })
 // 修改文章页
