@@ -23,7 +23,7 @@ router.post('/',checkNotLogin,function(req,res,next){
 			}
 			// 成功
 			req.session.user=user
-			res.redirect('/journal')
+			res.redirect('back')
 		})
 })
 

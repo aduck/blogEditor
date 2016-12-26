@@ -1,4 +1,4 @@
-extends ./layout.pug
+extends layout.pug
 
 block header
 	title #{blog.name}
@@ -7,18 +7,21 @@ block content
 	.container
 		.journal-title #{journal.title}
 		.journal-info
-			span view：#{journal.meta.pv}
-			span date：#{date}
+			span 查看：#{journal.meta.pv}　　
+			span 发布日期：#{date}
 		.journal-content.markdown
 			!=html
+		.journal-tags.clearfix
+			each tag,index in journal.tags
+				a(href=`/tag/${tag}`) #{tag} 
 		.journal-links
 			.journal-link 上一篇：
 				if siblings[0]
 					a(href=`/journal/${siblings[0]._id}`) #{siblings[0].title}
 				else
-					span 无
+					span 没有了...
 			.journal-link 下一篇：
 				if siblings[1]
 					a(href=`/journal/${siblings[1]._id}`) #{siblings[1].title}
 				else
-					span 无
+					span 没有了...

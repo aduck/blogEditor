@@ -1,5 +1,6 @@
 module.exports={
 	root:'http://127.0.0.1:8080/',
+	port:8080,
 	upload:'uploads',
 	maxUpdate:12,
 	blog:{

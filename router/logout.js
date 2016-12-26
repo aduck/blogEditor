@@ -3,7 +3,7 @@ var router=express.Router()
 var User=require('../models/user')
 var checkLogin=require('../middle/check').checkLogin
 
-router.get('/',checkLogin,function(req,res,next){
+router.get('/',function(req,res,next){
 	req.session.user=null
 	res.redirect('/')
 })
