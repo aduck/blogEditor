@@ -13,6 +13,7 @@ mongoose.connect(config.mongodb)
 // 常量
 app.locals.blog=config.blog
 app.locals.root=config.root
+app.locals.pretty=' '
 // 中间件
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.static('statics'))
@@ -27,6 +28,11 @@ app.use(session({
 		url:config.mongodb
 	})
 }))
+// 变量
+app.use(function(req,res,next){
+	res.locals.user=req.session.user
+	next()
+})
 // 配置
 app.set('views',path.join(__dirname,'views'))
 app.set('view engine','pug')

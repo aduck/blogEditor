@@ -6,77 +6,78 @@ html
     link(href=`${root}css/editor.css`,rel="stylesheet")
   body
     .container
-      form(action=`/journal/${_id}/edit`,method="post")
-        p.journalEditor-item.journalEditor-item-title 标题
-          br
-          input(type="text",name="title",value=`${title}`)
-        p.journalEditor-item 缩略图 
-          label.thumbUp-btn(for="thumbUp-btn") 上传缩略图
-            input#thumbUp-btn(type="file",multiple,name="thumb")
-          span#thumbUp-pre.thumbUp-pre
-            img(src=`${thumb}`)
-          input#thumbUp-save(type="hidden",name="thumbPath",value=`${thumb}`)
-        p.journalEditor-item.journalEditor-item-tags 标签
-          br
-          input(type="text",name="tags",value=`${tagstr}`)
-        .editor-tools
-          label.editor-tool.editor-tool-upload(for="upfile") 添加图片
-            input#upfile(type="file",multiple,name="photo")   
-        .editor-markdown
-          textarea#markEditor(name="content")
-            | #{content}
-        input.editor-submit(type="submit",value="提交")
-    script.
-      var editor=document.getElementById('markEditor')
-      var upUrl='/photo/upload'
-      var imgReg=/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/
-      var fileIpt=document.getElementById('upfile')
-      var thumbIpt=document.getElementById('thumbUp-btn')
-      // 上传文件
-      function upFile(url,files,cb){
-        var xhr=new XMLHttpRequest()
-        xhr.open('POST',url,true)
-        xhr.send(files)
-        xhr.onreadystatechange=function(){
-          if(xhr.readyState==4){
-            if((xhr.status>=200&&xhr.status<300)||xhr.status==304){     
-              cb(xhr.responseText)
+      .journalEditor
+        form(action=`/journal/${_id}/edit`,method="post")
+          p.journalEditor-item.journalEditor-item-title 标题
+            br
+            input(type="text",name="title",value=`${title}`)
+          p.journalEditor-item 缩略图 
+            label.thumbUp-btn(for="thumbUp-btn") 上传缩略图
+              input#thumbUp-btn(type="file",multiple,name="thumb")
+            span#thumbUp-pre.thumbUp-pre
+              img(src=`${thumb}`)
+            input#thumbUp-save(type="hidden",name="thumbPath",value=`${thumb}`)
+          p.journalEditor-item.journalEditor-item-tags 标签
+            br
+            input(type="text",name="tags",value=`${tagstr}`)
+          .editor-tools
+            label.editor-tool.editor-tool-upload(for="upfile") 添加图片
+              input#upfile(type="file",multiple,name="photo")   
+          .editor-markdown
+            textarea#markEditor(name="content")
+              | #{content}
+          input.editor-submit(type="submit",value="提交")
+      script.
+        var editor=document.getElementById('markEditor')
+        var upUrl='/photo/upload'
+        var imgReg=/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/
+        var fileIpt=document.getElementById('upfile')
+        var thumbIpt=document.getElementById('thumbUp-btn')
+        // 上传文件
+        function upFile(url,files,cb){
+          var xhr=new XMLHttpRequest()
+          xhr.open('POST',url,true)
+          xhr.send(files)
+          xhr.onreadystatechange=function(){
+            if(xhr.readyState==4){
+              if((xhr.status>=200&&xhr.status<300)||xhr.status==304){     
+                cb(xhr.responseText)
+              }
             }
           }
         }
-      }
-      // 选择文件并上传
-      function selectFile(e,cb){
-        var formData=new FormData()
-        var files=[].slice.call(e.target.files,0)
-        files.forEach(function(file,index){
-          if(!imgReg.test(file.name)){
-            // 不是图片
-            return handleError('只能上传图片！文件已忽略')
-          }else{
-            formData.append('photo',file)
-          }
-        })
-        upFile(upUrl,formData,cb)
-      }
-      // 错误处理
-      function handleError(msg){
-        alert(msg)
-      }
-      // 插图
-      fileIpt.addEventListener('change',function(e){
-        selectFile(e,function(res){
-          JSON.parse(res).forEach(function(item){
-            editor.value+='!['+item.filename+'](!{root}'+item.path.replace(/\\/,"/")+') \n';
+        // 选择文件并上传
+        function selectFile(e,cb){
+          var formData=new FormData()
+          var files=[].slice.call(e.target.files,0)
+          files.forEach(function(file,index){
+            if(!imgReg.test(file.name)){
+              // 不是图片
+              return handleError('只能上传图片！文件已忽略')
+            }else{
+              formData.append('photo',file)
+            }
           })
-        })
-      },false)
-      // 缩略图
-      thumbIpt.addEventListener('change',function(e){
-        selectFile(e,function(res){
-          var resPath='!{root}'+JSON.parse(res)[0].path.replace(/\\/,"/")
-          document.getElementById('thumbUp-save').value=resPath
-          document.querySelectorAll('#thumbUp-pre img')[0].src=resPath
-        })
-      },false)
-      
+          upFile(upUrl,formData,cb)
+        }
+        // 错误处理
+        function handleError(msg){
+          alert(msg)
+        }
+        // 插图
+        fileIpt.addEventListener('change',function(e){
+          selectFile(e,function(res){
+            JSON.parse(res).forEach(function(item){
+              editor.value+='!['+item.filename+'](!{root}'+item.path.replace(/\\/,"/")+') \n';
+            })
+          })
+        },false)
+        // 缩略图
+        thumbIpt.addEventListener('change',function(e){
+          selectFile(e,function(res){
+            var resPath='!{root}'+JSON.parse(res)[0].path.replace(/\\/,"/")
+            document.getElementById('thumbUp-save').value=resPath
+            document.querySelectorAll('#thumbUp-pre img')[0].src=resPath
+          })
+        },false)
+        

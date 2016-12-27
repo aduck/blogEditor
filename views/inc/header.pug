@@ -1,0 +1,7 @@
+header
+	.container
+		if user
+			a(href="/journal/create") 添加文章
+			a(href="/logout") 注销登陆
+		else
+			a(href="/login?from=") 登陆

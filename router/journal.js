@@ -36,13 +36,16 @@ router.post('/create',checkLogin,function(req,res,next){
 // 查看文章
 router.get('/',function(req,res,next){
 	var dates=[]
+	var intros=[]
 	var page=req.query.page || 1
-	Journal.getPage(2,page,function(err,journals,total){
+	Journal.getPage(6,page,function(err,journals,total){
 		if(err) return;
 			journals.forEach(function(journal){
 				dates.push(moment(journal.meta.updateAt).format('DD	MMM YYYY'))
+				intros.push(marked(journal.content).replace(/<[^>]+>/g,'').slice(0,60))
 			})
 			res.locals.dates=dates
+			res.locals.intros=intros
 			res.render('journals',{items:journals,current:page,total:total})
 	})
 })

@@ -4,18 +4,21 @@ block header
 	link(href="../css/style.css",rel="stylesheet")
 block content
 	.container
-		.journalItems
+		.journalItems.clearfix
 			each item,index in items
 				.journalItem
 					.journalItem-thumb
 						a(href=`/journal/${item._id}`)
 							img(src=`${item.thumb}`,alt="")
-					.journalItem-tags
-						each val in item.tags
-							a(href=`/tag/${val}`) #{val}
-					.journalItem-title
-						a(href=`/journal/${item._id}`) #{item.title}
 					.journalItem-info
-						| #{dates[index]}
+						.journalItem-title
+							a(href=`/journal/${item._id}`) #{item.title}
+						.journalItem-intro
+							| #{intros[index]}
+						.journalItem-tags.clearfix
+							each val in item.tags
+								a(href=`/tag/${val}`) #{val}
+						.journalItem-date
+							| #{dates[index]}
 			else
-				p 没有数据
+				p 当前分类没有文章

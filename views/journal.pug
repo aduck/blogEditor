@@ -5,6 +5,9 @@ block header
 	link(href=`${root}css/style.css`,rel="stylesheet")
 block content
 	.container
+		if user
+			a(href=`/journal/${journal._id}/edit`) 编辑
+			a(href=`/journal/${journal._id}/remove`) 删除
 		.journal-title #{journal.title}
 		.journal-info
 			span 查看：#{journal.meta.pv}　　
@@ -13,7 +16,7 @@ block content
 			!=html
 		.journal-tags.clearfix
 			each tag,index in journal.tags
-				a(href=`/tag/${tag}`) #{tag} 
+				a(href=`/tag/${tag}`) ##{tag}# 
 		.journal-links
 			.journal-link 上一篇：
 				if siblings[0]

@@ -1,7 +1,8 @@
 module.exports={
 	checkLogin:function(req,res,next){
 		if(!req.session.user){
-			return res.redirect('/login')
+			var originalUrl=req.originalUrl
+			return res.redirect('/login?from='+originalUrl)
 		}
 		next()
 	},

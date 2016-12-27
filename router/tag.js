@@ -2,6 +2,7 @@ var express=require('express')
 var router=express.Router()
 var Journal=require('../models/journal')
 var moment=require('moment')
+var marked=require('marked')
 
 // 标签列表
 router.get('/',function(req,res,next){
@@ -16,6 +17,7 @@ router.get('/',function(req,res,next){
 router.get('/:tagName',function(req,res,next){
 	var tagName=req.params.tagName
 	var dates=[]
+	var intros=[]
 	Journal
 		.find({"tags":tagName})
 		.sort({'meta.updateAt':-1})
@@ -23,8 +25,10 @@ router.get('/:tagName',function(req,res,next){
 			if(err) return;
 			journals.forEach(function(journal){
 				dates.push(moment(journal.meta.updateAt).format('DD	MMM YYYY'))
+				intros.push(marked(journal.content).replace(/<[^>]+>/g,'').slice(0,60))
 			})
 			res.locals.dates=dates
+			res.locals.intros=intros
 			res.render('tag',{items:journals})
 		})
 })
