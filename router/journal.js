@@ -42,7 +42,7 @@ router.get('/',function(req,res,next){
 		if(err) return;
 			journals.forEach(function(journal){
 				dates.push(moment(journal.meta.updateAt).format('DD	MMM YYYY'))
-				intros.push(marked(journal.content).replace(/<[^>]+>/g,'').slice(0,60))
+				intros.push(marked(journal.content).replace(/<[^>]+>/g,'').slice(0,42))
 			})
 			res.locals.dates=dates
 			res.locals.intros=intros

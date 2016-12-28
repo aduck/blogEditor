@@ -7,7 +7,7 @@ block content
 	.container
 		if user
 			a(href=`/journal/${journal._id}/edit`) 编辑
-			a(href=`/journal/${journal._id}/remove`) 删除
+			a(href='javascript:deletePostor();') 删除
 		.journal-title #{journal.title}
 		.journal-info
 			span 查看：#{journal.meta.pv}　　
@@ -28,3 +28,9 @@ block content
 					a(href=`/journal/${siblings[1]._id}`) #{siblings[1].title}
 				else
 					span 没有了...
+	script.
+		function deletePostor(){
+			if(confirm('确定删除？')){
+				location.href='/journal/!{journal._id}/remove'
+			}
+		}

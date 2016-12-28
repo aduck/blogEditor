@@ -9,7 +9,7 @@ router.get('/',checkNotLogin,function(req,res,next){
 router.post('/',checkNotLogin,function(req,res,next){
 	var username=req.body.username
 	var password=req.body.password
-	var backUrl=req.query.from || 'back'
+	var backUrl=req.query.from || '/'
 	// 验证
 	User
 		.findOne({username:username})
